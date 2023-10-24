@@ -1,12 +1,12 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    ElScraper.py                                       :+:      :+:    :+:    #
+#    ContiScraper.py                                    :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: amenses- <amenses-@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/10/24 18:25:56 by amenses-          #+#    #+#              #
-#    Updated: 2023/10/24 23:18:47 by amenses-         ###   ########.fr        #
+#    Created: 2023/10/24 21:28:29 by amenses-          #+#    #+#              #
+#    Updated: 2023/10/24 23:18:26 by amenses-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ from datetime import date
 import requests
 import pandas as pd
 
-class ElScraper:
+class ContiScraper:
     def __init__(self, urls):
         self.urls = urls
         self.data = pd.DataFrame(columns=['store_name', 'wine_name', 'price', 'price_currency', 'discount', 'capacity', 'scraping_date', 'location'])
@@ -38,38 +38,31 @@ class ElScraper:
             soup = BeautifulSoup(r.content, 'html5lib')
 
             # store name
-            store_name = soup.find('footer', class_="footer _copy").text.strip()
-            store_name = store_name.split(',')[1].split('S.A.')[0].strip()
+            store_name = soup.find('div', class_="copyright-notice ct-font--opensans-bookitalic").text.strip()
+            store_name = store_name.split(',')[0].split()
+            store_name = store_name[2] + ' ' + store_name[3] + ' ' + store_name[4]
 
             # wine name
-            wine_name = soup.find('div', class_="page_title").h1.text.strip()
+            wine_name = soup.find('div', class_="product-name-details").h1.text.strip()
 
             # price
             price = soup.find('div', class_="prices")
-            price_value = price.find('div', class_="prices-price _current")
+            price_value = price.find('span', class_="value")['content']
             discount = 0
-            if price_value == None:
-                price_value = price.find('div', class_="prices-price _offer")
+            if (price.find('p', class_="pwc-discount-amount") != None):
                 discount = 1
-            price_value = float(price_value.text.strip().split()[0].replace(',', '.'))
+            price_value = float(price_value)
 
             # currency
-            price_currency = price.find('span', class_="js-currency").text.strip()
+            price_currency = price.find('span', class_="ct-price-formatted").text.strip()[0]
 
             # capacity
-            capacity = soup.find('div', class_="info")
-            capacity_value = capacity.find_all('li')
-            for i in range(len(capacity_value)):
-                if "Quantidade" in capacity_value[i].text:
-                    capacity_value = capacity_value[i].text.split(':')[1]
-                    if "cl" in capacity_value:
-                        capacity_value = capacity_value.split()[0]
-                        capacity_value = float(capacity_value) / 100
-                    else:
-                        if "Mililitros" in capacity_value:
-                            capacity_value = capacity_value.split()[0]
-                            capacity_value = float(capacity_value) / 1000
-                    break
+            capacity = soup.find('div', class_="product-name-details")
+            capacity = capacity.find('span', class_="ct-pdp--unit").text.strip()
+            capacity = capacity.split()
+            capacity_value = float(capacity[-2].replace(',','.'))
+            if (capacity[-1] == 'cl'):
+                capacity_value = capacity_value / 100
 
             # location
             location = "default"
