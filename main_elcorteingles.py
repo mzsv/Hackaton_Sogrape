@@ -1,12 +1,12 @@
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
-#    main.py                                            :+:      :+:    :+:    #
+#    main_elcorteingles.py                              :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
 #    By: amenses- <amenses-@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/24 18:25:45 by amenses-          #+#    #+#              #
-#    Updated: 2023/10/24 23:44:19 by amenses-         ###   ########.fr        #
+#    Updated: 2023/10/25 01:09:44 by amenses-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,5 +26,5 @@ urls = {
 
 el_scraper = el.ElScraper(urls)
 el_scraper.scrape()
-timestamp = datetime.datetime.fromtimestamp(int(time.time())).strftime('%Y%m%d%H%M%S')
+timestamp = datetime.datetime.fromtimestamp(int(time.time())).strftime('_%Y%m%d_%H%M%S')
 el_scraper.save_to_csv('elcorteingles' + timestamp + '.csv')
