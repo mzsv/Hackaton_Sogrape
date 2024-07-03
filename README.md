@@ -49,5 +49,5 @@ streamlit run main.py
 # Acknowledgements 
 
 This code base was developed by Team 1 for Sogrape's Hackathon 2023 at 42 school, by the following members (by 42 student ID):
-- passunca (me)
 - [amenses-](https://github.com/mzsv)
+- passunca
